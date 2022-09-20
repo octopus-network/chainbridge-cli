@@ -3,6 +3,7 @@ pub type ResourceId = [u8; 32];
 
 #[derive(Debug, StructOpt)]
 pub struct Gid {
+    // Note: Chain ID is 0 indicating this is native to another chain
     /// chain id
     pub chain_id: Option<u8>,
     /// token name
@@ -38,10 +39,31 @@ impl Gid {
 }
 
 #[derive(Debug, StructOpt)]
+pub struct Str2Hex {
+    /// hex String content
+   content: Option<String>,
+}
+
+impl Str2Hex {
+    pub fn run(&self) -> anyhow::Result<()> {
+        println!("👉🏼👉🏼hex content: Start!");
+        let content = self.content.clone().ok_or(anyhow::anyhow!("Empty Content"))?;
+        let hex_content = hex::encode(content.as_bytes());
+        println!("🎈🎈content: {},hex content : 0x{}", content, hex_content);
+        println!("🌈🌈Content to hex : Successfull!🌈🌈");
+    
+        Ok(())
+    }
+}
+
+#[derive(Debug, StructOpt)]
 pub enum Command {
     /// generate reousrce id
     #[structopt(name = "generate-resource-id")]
     Gid(Gid),
+    /// encode content to hex
+    #[structopt(name = "str2hex")]
+    Str2Hex(Str2Hex),
 }
 
 #[derive(Debug, StructOpt)]
@@ -55,6 +77,7 @@ impl AppArguments {
     fn run(&self) -> anyhow::Result<()> {
         match &self.command {
             Command::Gid(value) => value.run(),
+            Command::Str2Hex(value) => value.run(),
         }
     }
 }
