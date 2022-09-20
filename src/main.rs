@@ -23,14 +23,15 @@ impl Gid {
     }
 
     fn run(&self) -> anyhow::Result<()> {
-        println!("generate resource id: Start!");
+        println!("👉🏼👉🏼generate resource id: Start!");
         let chain_id = self.chain_id.ok_or(anyhow::anyhow!("must be give chain id"))?;
         let token_name = self.token_name.clone().ok_or(anyhow::anyhow!("must be give token_name"))?;
 
         let token_name_hash = sp_io::hashing::blake2_128(token_name.as_bytes());
         let result = self.derive_resource_id(chain_id, &token_name_hash);
         let hex_encode = hex::encode(result);
-        println!("chain id: {}, token_name: {:?}, generate resource id: 0x{}", chain_id, self.token_name, hex_encode);
+        println!("🎈🎈chain id: {}, token_name: {}, generate resource id: 0x{}", chain_id, self.token_name.as_ref().unwrap(), hex_encode);
+        println!("🌈🌈generate resource id: Successfull!🌈🌈");
     
         Ok(())
     }
