@@ -6,7 +6,7 @@ pub struct Gid {
     /// chain id
     pub chain_id: Option<u8>,
     /// token name
-    pub token_contract_address: Option<String>,
+    pub token_name: Option<String>,
 }
 
 impl Gid {
@@ -25,14 +25,12 @@ impl Gid {
     fn run(&self) -> anyhow::Result<()> {
         println!("generate resource id: Start!");
         let chain_id = self.chain_id.ok_or(anyhow::anyhow!("must be give chain id"))?;
-        let token_contract_address = self.token_contract_address.clone().ok_or(anyhow::anyhow!("must be give token_contract_address"))?;
-        if !token_contract_address.starts_with("0x") {
-            return Err(anyhow::anyhow!("invalid token_contract_address"));
-        }
-        let token_contract_address = hex::decode(token_contract_address.trim_start_matches("0x")).map_err(|_| anyhow::anyhow!("token contract address hex decode failed"))?;
-        let result = self.derive_resource_id(chain_id, &token_contract_address);
+        let token_name = self.token_name.clone().ok_or(anyhow::anyhow!("must be give token_name"))?;
+
+        let token_name_hash = sp_io::hashing::blake2_128(token_name.as_bytes());
+        let result = self.derive_resource_id(chain_id, &token_name_hash);
         let hex_encode = hex::encode(result);
-        println!("chain id: {}, token_contract_address: {:?}, generate resource id: 0x{}", chain_id, self.token_contract_address, hex_encode);
+        println!("chain id: {}, token_name: {:?}, generate resource id: 0x{}", chain_id, self.token_name, hex_encode);
     
         Ok(())
     }

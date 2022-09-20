@@ -10,3 +10,4 @@ edition = "2021"
 structopt = "0.3.26"
 hex = "0.4.3"
 anyhow = "1.0.65"
+sp-io = { version = "6.0.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.28" }
